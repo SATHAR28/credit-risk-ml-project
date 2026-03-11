@@ -1,0 +1,7 @@
+flask
+pandas
+numpy<2
+scikit-learn==1.6.1
+joblib
+catboost
+xgboost

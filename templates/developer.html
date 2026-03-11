@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Developer — CreditGuard AI</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="logo">Credit<span>Guard</span></a>
+    <div class="nav-menu" id="navMenu">
+      <a href="/">Home</a>
+      <a href="/about">About</a>
+      <a href="/predict">Predict</a>
+      <a href="/developer" class="active">Developer</a>
+    </div>
+    <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<section class="page-header">
+  <div class="wrap">
+    <h1>Meet the Developer</h1>
+    <p>The engineer who designed, built, and deployed CreditGuard AI.</p>
+  </div>
+</section>
+
+<!-- DEVELOPER PROFILE -->
+<section class="dev-page wrap">
+  <div class="dev-profile">
+    <div class="dev-img-wrap">
+      <img src="{{ url_for('static', filename='photo_NB.jpg') }}" alt="Developer"/>
+    </div>
+    <div class="dev-details">
+      <div class="dev-label">Project Lead &amp; Developer</div>
+      <h2 class="dev-fullname">SATHISH S</h2>
+      <p class="dev-designation">Machine Learning Engineer &amp; Full Stack Developer</p>
+      <p class="dev-about">
+        I designed and developed CreditGuard AI end-to-end as my capstone project —
+        from exploratory data analysis and feature engineering in Google Colab, through
+        training a stacked ensemble of five classifiers, to deploying this production-ready
+        Flask application. My goal was to demonstrate that ML isn't just about notebooks;
+        it's about building real systems that deliver value.
+      </p>
+
+      <div class="dev-highlight-grid">
+        <div class="dev-hl">
+          <span class="hl-num">5+</span>
+          <span class="hl-text">Models Stacked</span>
+        </div>
+        <div class="dev-hl">
+          <span class="hl-num">24</span>
+          <span class="hl-text">Engineered Features</span>
+        </div>
+        <div class="dev-hl">
+          <span class="hl-num">Full</span>
+          <span class="hl-text">Stack Delivery</span>
+        </div>
+      </div>
+
+      <h3 class="dev-sh">Skills &amp; Expertise</h3>
+      <div class="dev-skills">
+        <span>Python</span>
+        <span>Machine Learning</span>
+        <span>Deep Learning</span>
+        <span>Scikit-Learn</span>
+        <span>XGBoost</span>
+        <span>CatBoost</span>
+        <span>Flask</span>
+        <span>Pandas &amp; NumPy</span>
+        <span>Data Visualization</span>
+        <span>SQL</span>
+        <span>HTML / CSS / JS</span>
+        <span>Git &amp; GitHub</span>
+      </div>
+
+      <h3 class="dev-sh">Connect</h3>
+      <div class="dev-socials">
+        <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i> LinkedIn</a>
+        <a href="#" class="social-link"><i class="fab fa-github"></i> GitHub</a>
+        <a href="#" class="social-link"><i class="fas fa-envelope"></i> Email</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<section class="dev-timeline wrap">
+  <h2>Project Timeline</h2>
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <h4>Data Collection &amp; EDA</h4>
+        <p>Gathered credit bureau data, performed exploratory analysis, identified key predictors of default.</p>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <h4>Feature Engineering</h4>
+        <p>One-hot encoded categorical features, selected 24 final features, prepared the training pipeline.</p>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <h4>Model Training &amp; Stacking</h4>
+        <p>Trained 5 base models individually, then built a StackingClassifier with cross-validated meta-learning.</p>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <h4>Web Application Development</h4>
+        <p>Built the Flask backend, designed the multi-page frontend, integrated model inference.</p>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <h4>Deployment &amp; Testing</h4>
+        <p>End-to-end testing, error handling, responsive design, and production-ready packaging.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="foot">
+  <div class="foot-inner wrap">
+    <div class="foot-brand">
+      <a href="/" class="logo">Credit<span>Guard</span></a>
+      <p>Intelligent credit risk assessment powered by stacked ensemble ML.</p>
+    </div>
+    <div class="foot-links">
+      <h4>Pages</h4>
+      <a href="/">Home</a>
+      <a href="/about">About</a>
+      <a href="/developer">Developer</a>
+    </div>
+    <div class="foot-links">
+      <h4>Stack</h4>
+      <a href="#">Python + Flask</a>
+      <a href="#">Scikit-Learn</a>
+      <a href="#">XGBoost + CatBoost</a>
+    </div>
+  </div>
+  <div class="foot-bottom wrap">
+    <p>&copy; 2026 CreditGuard AI &mdash; Capstone Project</p>
+  </div>
+</footer>
+
+<script>
+document.getElementById('burger').addEventListener('click',()=>{
+  document.getElementById('navMenu').classList.toggle('open');
+  document.getElementById('burger').classList.toggle('active');
+});
+</script>
+</body>
+</html>

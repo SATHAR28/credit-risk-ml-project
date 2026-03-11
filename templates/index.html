@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>CreditGuard AI</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="logo">Credit<span>Guard</span></a>
+    <div class="nav-menu" id="navMenu">
+      <a href="/" class="active">Home</a>
+      <a href="/about">About</a>
+      <a href="/developer">Developer</a>
+    </div>
+    <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="home-hero">
+  <div class="home-hero-left">
+    <div class="badge">Stacked Ensemble ML</div>
+    <h1>Know the risk<br><em>before</em> the loan.</h1>
+    <p>CreditGuard AI uses a multi-model stacking architecture to predict borrower default probability — giving lenders a decisive edge in under a second.</p>
+    <div class="home-cta">
+      <a href="/predict" class="cta-fill">Start Predicting</a>
+      <a href="/about" class="cta-ghost">How it works <i class="fas fa-arrow-right"></i></a>
+    </div>
+  </div>
+  <div class="home-hero-right">
+    <div class="float-card fc-1">
+      <i class="fas fa-shield-halved"></i>
+      <div><strong>Risk Engine</strong><span>Real-time scoring</span></div>
+    </div>
+    <div class="float-card fc-2">
+      <i class="fas fa-layer-group"></i>
+      <div><strong>5 Base Models</strong><span>Stacked ensemble</span></div>
+    </div>
+    <div class="float-card fc-3">
+      <i class="fas fa-bolt"></i>
+      <div><strong>&lt; 1 sec</strong><span>Inference latency</span></div>
+    </div>
+    <div class="hero-orb orb-1"></div>
+    <div class="hero-orb orb-2"></div>
+  </div>
+</section>
+
+<!-- NUMBERS -->
+<section class="numbers">
+  <div class="num-item"><span class="num-big">24</span><span class="num-label">Input Features</span></div>
+  <div class="num-divider"></div>
+  <div class="num-item"><span class="num-big">5+</span><span class="num-label">ML Models Stacked</span></div>
+  <div class="num-divider"></div>
+  <div class="num-item"><span class="num-big">1</span><span class="num-label">Click Prediction</span></div>
+  <div class="num-divider"></div>
+  <div class="num-item"><span class="num-big">0</span><span class="num-label">Retraining Needed</span></div>
+</section>
+
+<!-- QUICK OVERVIEW -->
+<section class="overview wrap">
+  <div class="ov-text">
+    <h2>Built for real-world lending.</h2>
+    <p>This isn't a toy demo. CreditGuard AI was engineered as an industry-grade capstone — trained on credit bureau data, stacked with Logistic Regression, Decision Trees, Random Forest, XGBoost, and CatBoost, then served through a production Flask backend.</p>
+    <a href="/about" class="link-arrow">Read the full methodology <i class="fas fa-arrow-right"></i></a>
+  </div>
+  <div class="ov-cards">
+    <div class="ov-card">
+      <div class="ov-icon"><i class="fas fa-brain"></i></div>
+      <h3>Ensemble Intelligence</h3>
+      <p>Meta-learner combines 5 diverse classifiers for predictions that surpass any single model.</p>
+    </div>
+    <div class="ov-card">
+      <div class="ov-icon"><i class="fas fa-database"></i></div>
+      <h3>Production Pipeline</h3>
+      <p>One-hot encoding, feature alignment, and inference — all automated behind a single API call.</p>
+    </div>
+    <div class="ov-card">
+      <div class="ov-icon"><i class="fas fa-lock"></i></div>
+      <h3>Input Validation</h3>
+      <p>Every field is validated server-side. Missing or malformed data gets caught before it hits the model.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<section class="cta-banner">
+  <h2>Built to reduce lending risk.</h2>
+  <p>An end-to-end machine learning capstone — from data preprocessing to production deployment.</p>
+  <a href="/about" class="cta-fill">Explore the Methodology</a>
+</section>
+
+<!-- FOOTER -->
+<footer class="foot">
+  <div class="foot-inner wrap">
+    <div class="foot-brand">
+      <a href="/" class="logo">Credit<span>Guard</span></a>
+      <p>Intelligent credit risk assessment powered by stacked ensemble ML.</p>
+    </div>
+    <div class="foot-links">
+      <h4>Pages</h4>
+      <a href="/">Home</a>
+      <a href="/about">About</a>
+      <a href="/developer">Developer</a>
+    </div>
+    <div class="foot-links">
+      <h4>Stack</h4>
+      <a href="#">Python + Flask</a>
+      <a href="#">Scikit-Learn</a>
+      <a href="#">XGBoost + CatBoost</a>
+    </div>
+  </div>
+  <div class="foot-bottom wrap">
+    <p>&copy; 2026 CreditGuard AI &mdash; Capstone Project</p>
+  </div>
+</footer>
+
+<script>
+document.getElementById('burger').addEventListener('click',()=>{
+  document.getElementById('navMenu').classList.toggle('open');
+  document.getElementById('burger').classList.toggle('active');
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>About — CreditGuard AI</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="logo">Credit<span>Guard</span></a>
+    <div class="nav-menu" id="navMenu">
+      <a href="/">Home</a>
+      <a href="/about" class="active">About</a>
+      <a href="/predict">Predict</a>
+      <a href="/developer">Developer</a>
+    </div>
+    <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<section class="page-header">
+  <div class="wrap">
+    <h1>About This Project</h1>
+    <p>The motivation, methodology, and technology behind CreditGuard AI.</p>
+  </div>
+</section>
+
+<!-- MOTIVE -->
+<section class="about-block wrap">
+  <div class="ab-split">
+    <div class="ab-left">
+      <div class="ab-label">The Problem</div>
+      <h2>Why credit risk prediction matters</h2>
+    </div>
+    <div class="ab-right">
+      <p>Financial institutions lose billions annually to loan defaults. Traditional rule-based underwriting is slow, inconsistent, and unable to capture complex non-linear patterns in borrower behaviour.</p>
+      <p>CreditGuard AI was built to solve this — an automated, ML-driven system that evaluates default probability in real-time, reducing human bias and accelerating lending decisions while maintaining regulatory transparency.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider wrap"/>
+
+<!-- METHODOLOGY -->
+<section class="about-block wrap">
+  <div class="ab-split">
+    <div class="ab-left">
+      <div class="ab-label">Methodology</div>
+      <h2>Stacked ensemble architecture</h2>
+    </div>
+    <div class="ab-right">
+      <p>The core of CreditGuard AI is a <strong>Stacking Classifier</strong> that combines five diverse base models, each contributing a unique perspective on the data:</p>
+    </div>
+  </div>
+
+  <div class="method-grid">
+    <div class="method-card">
+      <div class="mc-num">01</div>
+      <h3>Logistic Regression</h3>
+      <p>A linear baseline that captures the fundamental decision boundary between default and non-default classes.</p>
+    </div>
+    <div class="method-card">
+      <div class="mc-num">02</div>
+      <h3>Decision Tree</h3>
+      <p>Learns interpretable if-then rules from the data, capturing non-linear thresholds in credit features.</p>
+    </div>
+    <div class="method-card">
+      <div class="mc-num">03</div>
+      <h3>Random Forest</h3>
+      <p>An ensemble of hundreds of decorrelated trees that reduces variance and improves generalization.</p>
+    </div>
+    <div class="method-card">
+      <div class="mc-num">04</div>
+      <h3>XGBoost</h3>
+      <p>Gradient-boosted trees with regularization — highly competitive on tabular data with built-in handling of missing values.</p>
+    </div>
+    <div class="method-card">
+      <div class="mc-num">05</div>
+      <h3>CatBoost</h3>
+      <p>Ordered boosting with native categorical feature support, reducing prediction shift and overfitting.</p>
+    </div>
+    <div class="method-card mc-highlight">
+      <div class="mc-num"><i class="fas fa-layer-group"></i></div>
+      <h3>Meta-Learner</h3>
+      <p>A final estimator trained on the base models' cross-validated predictions, learning the optimal way to combine them.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider wrap"/>
+
+<!-- DATA & FEATURES -->
+<section class="about-block wrap">
+  <div class="ab-split">
+    <div class="ab-left">
+      <div class="ab-label">Data</div>
+      <h2>Feature engineering &amp; pipeline</h2>
+    </div>
+    <div class="ab-right">
+      <p>The model was trained on historical credit bureau data with 24 engineered features covering three categories:</p>
+    </div>
+  </div>
+
+  <div class="feat-grid">
+    <div class="feat-card">
+      <h4><i class="fas fa-user"></i> Demographic</h4>
+      <ul>
+        <li>Gender</li>
+        <li>Occupation (19 categories, one-hot encoded)</li>
+      </ul>
+    </div>
+    <div class="feat-card">
+      <h4><i class="fas fa-briefcase"></i> Employment</h4>
+      <ul>
+        <li>Number of days employed</li>
+      </ul>
+    </div>
+    <div class="feat-card">
+      <h4><i class="fas fa-chart-bar"></i> Credit History</h4>
+      <ul>
+        <li>Credit score</li>
+        <li>Credit limit utilization (%)</li>
+        <li>Defaults in last 6 months</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<hr class="divider wrap"/>
+
+<!-- TECH STACK -->
+<section class="about-block wrap" style="padding-bottom:100px;">
+  <div class="ab-split">
+    <div class="ab-left">
+      <div class="ab-label">Technology</div>
+      <h2>Production stack</h2>
+    </div>
+    <div class="ab-right">
+      <p>Every component was chosen for reliability and lightweight deployment:</p>
+    </div>
+  </div>
+
+  <div class="stack-list">
+    <div class="stack-row">
+      <span class="stack-name">Python 3.11</span>
+      <span class="stack-desc">Core language for ML and backend</span>
+    </div>
+    <div class="stack-row">
+      <span class="stack-name">Scikit-Learn 1.6</span>
+      <span class="stack-desc">StackingClassifier framework &amp; utilities</span>
+    </div>
+    <div class="stack-row">
+      <span class="stack-name">XGBoost</span>
+      <span class="stack-desc">Gradient boosted tree base model</span>
+    </div>
+    <div class="stack-row">
+      <span class="stack-name">CatBoost</span>
+      <span class="stack-desc">Ordered boosting base model</span>
+    </div>
+    <div class="stack-row">
+      <span class="stack-name">Flask</span>
+      <span class="stack-desc">Lightweight WSGI web framework</span>
+    </div>
+    <div class="stack-row">
+      <span class="stack-name">Pandas</span>
+      <span class="stack-desc">DataFrame construction for inference input</span>
+    </div>
+    <div class="stack-row">
+      <span class="stack-name">Joblib</span>
+      <span class="stack-desc">Model serialization / deserialization</span>
+    </div>
+    <div class="stack-row">
+      <span class="stack-name">HTML / CSS / JS</span>
+      <span class="stack-desc">Custom frontend — no heavy JS frameworks</span>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="foot">
+  <div class="foot-inner wrap">
+    <div class="foot-brand">
+      <a href="/" class="logo">Credit<span>Guard</span></a>
+      <p>Intelligent credit risk assessment powered by stacked ensemble ML.</p>
+    </div>
+    <div class="foot-links">
+      <h4>Pages</h4>
+      <a href="/">Home</a>
+      <a href="/about">About</a>
+      <a href="/developer">Developer</a>
+    </div>
+    <div class="foot-links">
+      <h4>Stack</h4>
+      <a href="#">Python + Flask</a>
+      <a href="#">Scikit-Learn</a>
+      <a href="#">XGBoost + CatBoost</a>
+    </div>
+  </div>
+  <div class="foot-bottom wrap">
+    <p>&copy; 2026 CreditGuard AI &mdash; Capstone Project</p>
+  </div>
+</footer>
+
+<script>
+document.getElementById('burger').addEventListener('click',()=>{
+  document.getElementById('navMenu').classList.toggle('open');
+  document.getElementById('burger').classList.toggle('active');
+});
+</script>
+</body>
+</html>
