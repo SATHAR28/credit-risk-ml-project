@@ -46,62 +46,116 @@
       {% endif %}
 
       {% if prediction %}
-      <div class="msg {{ 'msg-danger' if prediction == 'High Risk' else 'msg-safe' }}">
-        <div class="msg-icon">
-          {% if prediction == 'High Risk' %}
-          <i class="fas fa-xmark-circle"></i>
-          {% else %}
-          <i class="fas fa-circle-check"></i>
-          {% endif %}
+      <div class="result-card {{ 'result-danger' if prediction == 'High Risk' else 'result-safe' }}">
+        <div class="result-header">
+          <div class="result-icon">
+            {% if prediction == 'High Risk' %}
+            <i class="fas fa-shield-xmark"></i>
+            {% else %}
+            <i class="fas fa-shield-check"></i>
+            {% endif %}
+          </div>
+          <div>
+            <span class="result-label">Model Verdict</span>
+            <span class="result-value">{{ prediction }}</span>
+          </div>
         </div>
-        <div>
-          <span class="msg-label">Model Verdict</span>
-          <span class="msg-value">{{ prediction }}</span>
+        {% if probability is not none %}
+        <div class="prob-section">
+          <div class="prob-header">
+            <span class="prob-title">Default Probability</span>
+            <span class="prob-pct {{ 'prob-pct-high' if probability > 50 else 'prob-pct-low' }}">{{ "%.1f"|format(probability) }}%</span>
+          </div>
+          <div class="prob-bar-track">
+            <div class="prob-bar-fill {% if probability > 50 %}prob-fill-high{% else %}prob-fill-low{% endif %}" data-width="{{ probability }}"></div>
+          </div>
+          <p class="prob-note">
+            {% if probability > 70 %}
+            <i class="fas fa-triangle-exclamation"></i> Very high likelihood of default — loan is extremely risky.
+            {% elif probability > 50 %}
+            <i class="fas fa-triangle-exclamation"></i> Elevated risk — borrower is more likely to default than not.
+            {% elif probability > 30 %}
+            <i class="fas fa-info-circle"></i> Moderate risk — some chance of default; proceed with caution.
+            {% else %}
+            <i class="fas fa-circle-check"></i> Low risk — borrower is unlikely to default.
+            {% endif %}
+          </p>
         </div>
+        {% endif %}
       </div>
       {% endif %}
 
       <form action="/predict" method="POST" class="pred-form">
-        <div class="row-2">
-          <div class="field">
-            <label for="gender">Gender</label>
-            <select id="gender" name="gender" required>
-              <option value="" disabled selected>Select</option>
-              <option value="0">Female</option>
-              <option value="1">Male</option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="occupation">Occupation</label>
-            <select id="occupation" name="occupation" required>
-              <option value="" disabled selected>Select</option>
-              {% for occ in occupations %}
-              <option value="{{ occ }}">{{ occ }}</option>
-              {% endfor %}
-            </select>
-          </div>
-        </div>
-        <div class="row-2">
-          <div class="field">
-            <label for="no_of_days_employed">Days Employed</label>
-            <input type="number" id="no_of_days_employed" name="no_of_days_employed" placeholder="e.g. 1200" step="1" required/>
-          </div>
-          <div class="field">
-            <label for="credit_score">Credit Score</label>
-            <input type="number" id="credit_score" name="credit_score" placeholder="e.g. 650" step="0.01" required/>
+        <!-- Section 1: Personal Information -->
+        <div class="form-section">
+          <div class="form-section-title"><i class="fas fa-user"></i> Personal Information</div>
+          <div class="row-2">
+            <div class="field">
+              <label for="gender">Gender</label>
+              <select id="gender" name="gender" required>
+                <option value="" disabled selected>Select gender</option>
+                <option value="0">Female</option>
+                <option value="1">Male</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="occupation">Occupation</label>
+              <select id="occupation" name="occupation" required>
+                <option value="" disabled selected>Select occupation</option>
+                {% for occ in occupations %}
+                <option value="{{ occ }}">{{ occ }}</option>
+                {% endfor %}
+              </select>
+              <span class="field-hint">Maps to 19 one-hot encoded occupation features internally</span>
+            </div>
           </div>
         </div>
-        <div class="row-2">
-          <div class="field">
-            <label for="credit_limit_used">Credit Limit Used (%)</label>
-            <input type="number" id="credit_limit_used" name="credit_limit_used" placeholder="e.g. 45.5" step="0.01" min="0" max="100" required/>
-          </div>
-          <div class="field">
-            <label for="default_in_last_6months">Defaults (Last 6 Mo.)</label>
-            <input type="number" id="default_in_last_6months" name="default_in_last_6months" placeholder="e.g. 0" step="1" min="0" required/>
+
+        <!-- Section 2: Employment Details -->
+        <div class="form-section">
+          <div class="form-section-title"><i class="fas fa-briefcase"></i> Employment Details</div>
+          <div class="row-2">
+            <div class="field">
+              <label for="no_of_days_employed">Number of Days Employed</label>
+              <input type="number" id="no_of_days_employed" name="no_of_days_employed" placeholder="e.g. 1200" step="1" required/>
+              <span class="field-hint">Total days at current employment</span>
+            </div>
           </div>
         </div>
-        <button type="submit" class="submit-btn">Predict Loan Risk <i class="fas fa-arrow-right"></i></button>
+
+        <!-- Section 3: Credit Profile -->
+        <div class="form-section">
+          <div class="form-section-title"><i class="fas fa-credit-card"></i> Credit Profile</div>
+          <div class="row-2">
+            <div class="field">
+              <label for="credit_score">Credit Score</label>
+              <input type="number" id="credit_score" name="credit_score" placeholder="e.g. 650" step="0.01" required/>
+              <span class="field-hint">Borrower's credit score</span>
+            </div>
+            <div class="field">
+              <label for="credit_limit_used">Credit Limit Used (%)</label>
+              <input type="number" id="credit_limit_used" name="credit_limit_used" placeholder="e.g. 45.5" step="0.01" min="0" max="100" required/>
+              <span class="field-hint">Percentage of credit limit utilized</span>
+            </div>
+          </div>
+          <div class="row-2">
+            <div class="field">
+              <label for="default_in_last_6months">Defaults in Last 6 Months</label>
+              <input type="number" id="default_in_last_6months" name="default_in_last_6months" placeholder="e.g. 0" step="1" min="0" required/>
+              <span class="field-hint">Number of payment defaults in the past 6 months</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Feature Summary -->
+        <div class="feature-summary">
+          <i class="fas fa-microchip"></i>
+          <span>These 6 inputs map to all <strong>24 features</strong> used by the stacked model (5 numeric + 19 one-hot encoded occupation columns).</span>
+        </div>
+
+        <button type="submit" class="submit-btn">
+          <i class="fas fa-brain"></i> Run Prediction
+        </button>
       </form>
     </div>
 
@@ -144,6 +198,12 @@
 </section>
 
 <!-- FOOTER -->
+
+<script>
+document.querySelectorAll('[data-width]').forEach(function(el){
+  el.style.width = el.getAttribute('data-width') + '%';
+});
+</script>
 <footer class="foot">
   <div class="foot-inner wrap">
     <div class="foot-brand">

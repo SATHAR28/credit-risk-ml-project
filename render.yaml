@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: creditguard-ai
+    runtime: python
+    buildCommand: pip install --no-cache-dir -r requirements.txt
+    startCommand: gunicorn backend.app:app
+    plan: free

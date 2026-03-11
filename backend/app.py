@@ -61,6 +61,7 @@ def predict_page():
         "predict.html",
         occupations=OCCUPATION_VALUES,
         prediction=None,
+        probability=None,
         error=None,
     )
 
@@ -82,6 +83,7 @@ def predict():
                 "predict.html",
                 occupations=OCCUPATION_VALUES,
                 prediction=None,
+                probability=None,
                 error="All fields are required. Please fill in every input.",
             )
 
@@ -97,7 +99,32 @@ def predict():
                 "predict.html",
                 occupations=OCCUPATION_VALUES,
                 prediction=None,
+                probability=None,
                 error="Invalid numeric value. Please enter valid numbers.",
+            )
+
+        # ── strict range validation ──────────────────────────────────────
+        validation_errors = []
+        if credit_score_val < 300 or credit_score_val > 850:
+            validation_errors.append("Credit Score must be between 300 and 850.")
+        if credit_limit_val < 0 or credit_limit_val > 100:
+            validation_errors.append("Credit Limit Used (%) must be between 0 and 100.")
+        if defaults_6m_val < 0 or defaults_6m_val > 10:
+            validation_errors.append("Defaults in Last 6 Months must be between 0 and 10.")
+        if days_employed_val < 0:
+            validation_errors.append("Days Employed must be 0 or greater.")
+        if gender_val not in (0, 1):
+            validation_errors.append("Gender must be 0 (Female) or 1 (Male).")
+        if occupation not in OCCUPATION_VALUES:
+            validation_errors.append(f"Invalid occupation: {occupation}.")
+
+        if validation_errors:
+            return render_template(
+                "predict.html",
+                occupations=OCCUPATION_VALUES,
+                prediction=None,
+                probability=None,
+                error=" ".join(validation_errors),
             )
 
         # ── build feature vector in training order ───────────────────────
@@ -114,14 +141,27 @@ def predict():
 
         df = pd.DataFrame([row], columns=FEATURE_NAMES)
 
+        # ── debug logging ────────────────────────────────────────────────
+        print("\n[DEBUG] Input to model:")
+        print(df.to_string())
+        print()
+
         # ── predict ──────────────────────────────────────────────────────
         pred = model.predict(df)[0]
         result = "High Risk" if int(pred) == 1 else "Low Risk"
+
+        # ── probability of default ───────────────────────────────────────
+        probability = None
+        if hasattr(model, "predict_proba"):
+            proba = model.predict_proba(df)[0]
+            # class 1 = default probability
+            probability = round(float(proba[1]) * 100, 2)
 
         return render_template(
             "predict.html",
             occupations=OCCUPATION_VALUES,
             prediction=result,
+            probability=probability,
             error=None,
         )
 
@@ -131,6 +171,7 @@ def predict():
             "predict.html",
             occupations=OCCUPATION_VALUES,
             prediction=None,
+            probability=None,
             error="An unexpected error occurred. Please try again.",
         )
 
