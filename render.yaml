@@ -4,5 +4,5 @@ services:
     runtime: python
     pythonVersion: "3.11.11"
     buildCommand: pip install --no-cache-dir -r requirements.txt
-    startCommand: gunicorn backend.app:app
+    startCommand: gunicorn backend.app:app --workers 1 --timeout 120 --preload
     plan: free
