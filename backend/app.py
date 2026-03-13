@@ -12,6 +12,15 @@ BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 MODEL_PATH = os.path.join(BASE_DIR, "models", "credit_risk_stacked_model.pkl")
 FEATURES_PATH = os.path.join(BASE_DIR, "features.json")
 
+# configurable decision thresholds for class-1 probability (default risk)
+LOW_RISK_THRESHOLD = float(os.getenv("LOW_RISK_THRESHOLD", "40"))
+HIGH_RISK_THRESHOLD = float(os.getenv("HIGH_RISK_THRESHOLD", "60"))
+
+if not (0 <= LOW_RISK_THRESHOLD <= HIGH_RISK_THRESHOLD <= 100):
+    print("[WARN] Invalid threshold config; falling back to LOW=40, HIGH=60")
+    LOW_RISK_THRESHOLD = 40.0
+    HIGH_RISK_THRESHOLD = 60.0
+
 # ── load model & features once at startup ────────────────────────────────────
 try:
     model = joblib.load(MODEL_PATH)
@@ -32,12 +41,77 @@ except Exception as exc:
 OCCUPATION_COLUMNS = [f for f in FEATURE_NAMES if f.startswith("occupation_")]
 OCCUPATION_VALUES = [c.replace("occupation_", "") for c in OCCUPATION_COLUMNS]
 
+
+def evaluate_model_health(loaded_model):
+    """Run quick probe predictions to detect obviously degenerate artifacts."""
+    try:
+        if not OCCUPATION_VALUES:
+            return {
+                "healthy": False,
+                "message": "No occupation features found in feature schema.",
+            }
+
+        probe_occupation = OCCUPATION_VALUES[0]
+
+        def make_probe(gender, days, limit_used, score, defaults_6m):
+            row = {feat: 0 for feat in FEATURE_NAMES}
+            row["gender"] = gender
+            row["no_of_days_employed"] = days
+            row["credit_limit_used(%)"] = limit_used
+            row["credit_score"] = score
+            row["default_in_last_6months"] = defaults_6m
+            row[f"occupation_{probe_occupation}"] = 1
+            return pd.DataFrame([row], columns=FEATURE_NAMES)
+
+        probes = [
+            make_probe(1, 20, 98, 320, 9),
+            make_probe(0, 7000, 4, 830, 0),
+            make_probe(1, 1200, 55, 640, 1),
+        ]
+
+        preds = [int(loaded_model.predict(df)[0]) for df in probes]
+        probas = []
+        if hasattr(loaded_model, "predict_proba"):
+            probas = [float(loaded_model.predict_proba(df)[0][1]) for df in probes]
+
+        all_same_pred = len(set(preds)) == 1
+        all_same_proba = len(set(round(p, 6) for p in probas)) == 1 if probas else False
+
+        if all_same_pred and (not probas or all_same_proba):
+            return {
+                "healthy": False,
+                "message": (
+                    "Model appears degenerate (constant predictions on probe inputs). "
+                    "Retrain and replace models/credit_risk_stacked_model.pkl."
+                ),
+            }
+
+        return {"healthy": True, "message": None}
+    except Exception as exc:
+        return {"healthy": False, "message": f"Model health check failed: {exc}"}
+
+
+MODEL_HEALTH = evaluate_model_health(model)
+if MODEL_HEALTH["healthy"]:
+    print("[INFO] Model health check passed.")
+else:
+    print(f"[WARN] {MODEL_HEALTH['message']}")
+
 # ── Flask app ────────────────────────────────────────────────────────────────
 app = Flask(
     __name__,
     template_folder=os.path.join(BASE_DIR, "templates"),
     static_folder=os.path.join(BASE_DIR, "static"),
 )
+
+
+@app.context_processor
+def inject_decision_thresholds():
+    return {
+        "low_risk_threshold": LOW_RISK_THRESHOLD,
+        "high_risk_threshold": HIGH_RISK_THRESHOLD,
+        "model_warning": None if MODEL_HEALTH["healthy"] else MODEL_HEALTH["message"],
+    }
 
 
 @app.route("/")
@@ -69,6 +143,18 @@ def predict_page():
 @app.route("/predict", methods=["POST"])
 def predict():
     try:
+        if not MODEL_HEALTH["healthy"]:
+            return render_template(
+                "predict.html",
+                occupations=OCCUPATION_VALUES,
+                prediction=None,
+                probability=None,
+                error=(
+                    "Prediction is temporarily disabled because the current model artifact is invalid. "
+                    "Please retrain and deploy a new model file."
+                ),
+            )
+
         # ── collect & validate numeric inputs ────────────────────────────
         gender = request.form.get("gender", "").strip()
         days_employed = request.form.get("no_of_days_employed", "").strip()
@@ -146,16 +232,31 @@ def predict():
         print(df.to_string())
         print()
 
-        # ── predict ──────────────────────────────────────────────────────
-        pred = model.predict(df)[0]
-        result = "High Risk" if int(pred) == 1 else "Low Risk"
-
         # ── probability of default ───────────────────────────────────────
         probability = None
         if hasattr(model, "predict_proba"):
             proba = model.predict_proba(df)[0]
             # class 1 = default probability
             probability = round(float(proba[1]) * 100, 2)
+
+        # ── base class prediction fallback ───────────────────────────────
+        pred = int(model.predict(df)[0])
+
+        # ── post-processing policy for stability ─────────────────────────
+        # Middle-range probability is treated as uncertain and flagged.
+        if probability is None:
+            result = "High Risk" if pred == 1 else "Low Risk"
+        elif probability >= HIGH_RISK_THRESHOLD:
+            result = "High Risk"
+        elif probability <= LOW_RISK_THRESHOLD:
+            result = "Low Risk"
+        else:
+            result = "Manual Review"
+
+        print(
+            f"[INFO] Decision policy: prob={probability}, "
+            f"low={LOW_RISK_THRESHOLD}, high={HIGH_RISK_THRESHOLD}, result={result}"
+        )
 
         return render_template(
             "predict.html",

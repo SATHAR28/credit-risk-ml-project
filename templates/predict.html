@@ -6,7 +6,7 @@
   <title>Predict — CreditGuard AI</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet"/>
 </head>
 <body>
 
@@ -41,18 +41,24 @@
       <h2>Borrower Information</h2>
       <p class="p-card-sub">All fields are required for accurate prediction.</p>
 
+      {% if model_warning %}
+      <div class="msg msg-error"><i class="fas fa-circle-info"></i> {{ model_warning }}</div>
+      {% endif %}
+
       {% if error %}
       <div class="msg msg-error"><i class="fas fa-triangle-exclamation"></i> {{ error }}</div>
       {% endif %}
 
       {% if prediction %}
-      <div class="result-card {{ 'result-danger' if prediction == 'High Risk' else 'result-safe' }}">
+      <div class="result-card {{ 'result-danger' if prediction == 'High Risk' else ('result-safe' if prediction == 'Low Risk' else 'result-neutral') }}">
         <div class="result-header">
           <div class="result-icon">
             {% if prediction == 'High Risk' %}
             <i class="fas fa-shield-xmark"></i>
-            {% else %}
+            {% elif prediction == 'Low Risk' %}
             <i class="fas fa-shield-check"></i>
+            {% else %}
+            <i class="fas fa-scale-balanced"></i>
             {% endif %}
           </div>
           <div>
@@ -64,13 +70,15 @@
         <div class="prob-section">
           <div class="prob-header">
             <span class="prob-title">Default Probability</span>
-            <span class="prob-pct {{ 'prob-pct-high' if probability > 50 else 'prob-pct-low' }}">{{ "%.1f"|format(probability) }}%</span>
+            <span class="prob-pct {{ 'prob-pct-high' if prediction == 'High Risk' else ('prob-pct-low' if prediction == 'Low Risk' else 'prob-pct-mid') }}">{{ "%.1f"|format(probability) }}%</span>
           </div>
           <div class="prob-bar-track">
-            <div class="prob-bar-fill {% if probability > 50 %}prob-fill-high{% else %}prob-fill-low{% endif %}" data-width="{{ probability }}"></div>
+            <div class="prob-bar-fill {% if prediction == 'High Risk' %}prob-fill-high{% elif prediction == 'Low Risk' %}prob-fill-low{% else %}prob-fill-mid{% endif %}" data-width="{{ probability }}"></div>
           </div>
           <p class="prob-note">
-            {% if probability > 70 %}
+            {% if prediction == 'Manual Review' %}
+            <i class="fas fa-scale-balanced"></i> Borderline case (between {{ "%.0f"|format(low_risk_threshold) }}% and {{ "%.0f"|format(high_risk_threshold) }}%) — send for manual underwriting review.
+            {% elif probability > 70 %}
             <i class="fas fa-triangle-exclamation"></i> Very high likelihood of default — loan is extremely risky.
             {% elif probability > 50 %}
             <i class="fas fa-triangle-exclamation"></i> Elevated risk — borrower is more likely to default than not.
@@ -178,7 +186,7 @@
           </li>
           <li>
             <strong>Risk verdict</strong>
-            <span>You get <b>High Risk</b> or <b>Low Risk</b> instantly.</span>
+            <span>You get <b>High Risk</b>, <b>Low Risk</b>, or <b>Manual Review</b> instantly.</span>
           </li>
         </ol>
       </div>
