@@ -91,6 +91,21 @@
         </div>
         {% endif %}
       </div>
+
+      <div class="result-actions">
+        <form action="/download-letter" method="POST" class="result-action-form">
+          <input type="hidden" name="prediction" value="{{ prediction }}"/>
+          <input type="hidden" name="probability" value="{{ probability if probability is not none else '' }}"/>
+          <input type="hidden" name="gender" value="{{ form_data.get('gender', '') }}"/>
+          <input type="hidden" name="no_of_days_employed" value="{{ form_data.get('no_of_days_employed', '') }}"/>
+          <input type="hidden" name="credit_limit_used" value="{{ form_data.get('credit_limit_used', '') }}"/>
+          <input type="hidden" name="credit_score" value="{{ form_data.get('credit_score', '') }}"/>
+          <input type="hidden" name="default_in_last_6months" value="{{ form_data.get('default_in_last_6months', '') }}"/>
+          <input type="hidden" name="occupation" value="{{ form_data.get('occupation', '') }}"/>
+          <button type="submit" class="download-btn"><i class="fas fa-download"></i> Download Decision Letter</button>
+        </form>
+        <button type="button" class="print-btn" onclick="window.print()"><i class="fas fa-print"></i> Print This Screen</button>
+      </div>
       {% endif %}
 
       <form action="/predict" method="POST" class="pred-form">
@@ -101,17 +116,17 @@
             <div class="field">
               <label for="gender">Gender</label>
               <select id="gender" name="gender" required>
-                <option value="" disabled selected>Select gender</option>
-                <option value="0">Female</option>
-                <option value="1">Male</option>
+                <option value="" disabled {{ 'selected' if not form_data.get('gender') else '' }}>Select gender</option>
+                <option value="0" {{ 'selected' if form_data.get('gender') == '0' else '' }}>Female</option>
+                <option value="1" {{ 'selected' if form_data.get('gender') == '1' else '' }}>Male</option>
               </select>
             </div>
             <div class="field">
               <label for="occupation">Occupation</label>
               <select id="occupation" name="occupation" required>
-                <option value="" disabled selected>Select occupation</option>
+                <option value="" disabled {{ 'selected' if not form_data.get('occupation') else '' }}>Select occupation</option>
                 {% for occ in occupations %}
-                <option value="{{ occ }}">{{ occ }}</option>
+                <option value="{{ occ }}" {{ 'selected' if form_data.get('occupation') == occ else '' }}>{{ occ }}</option>
                 {% endfor %}
               </select>
               <span class="field-hint">Maps to 19 one-hot encoded occupation features internally</span>
@@ -125,7 +140,7 @@
           <div class="row-2">
             <div class="field">
               <label for="no_of_days_employed">Number of Days Employed</label>
-              <input type="number" id="no_of_days_employed" name="no_of_days_employed" placeholder="e.g. 1200" step="1" required/>
+              <input type="number" id="no_of_days_employed" name="no_of_days_employed" value="{{ form_data.get('no_of_days_employed', '') }}" placeholder="e.g. 1200" step="1" required/>
               <span class="field-hint">Total days at current employment</span>
             </div>
           </div>
@@ -137,19 +152,19 @@
           <div class="row-2">
             <div class="field">
               <label for="credit_score">Credit Score</label>
-              <input type="number" id="credit_score" name="credit_score" placeholder="e.g. 650" step="0.01" required/>
+              <input type="number" id="credit_score" name="credit_score" value="{{ form_data.get('credit_score', '') }}" placeholder="e.g. 650" step="0.01" required/>
               <span class="field-hint">Borrower's credit score</span>
             </div>
             <div class="field">
               <label for="credit_limit_used">Credit Limit Used (%)</label>
-              <input type="number" id="credit_limit_used" name="credit_limit_used" placeholder="e.g. 45.5" step="0.01" min="0" max="100" required/>
+              <input type="number" id="credit_limit_used" name="credit_limit_used" value="{{ form_data.get('credit_limit_used', '') }}" placeholder="e.g. 45.5" step="0.01" min="0" max="100" required/>
               <span class="field-hint">Percentage of credit limit utilized</span>
             </div>
           </div>
           <div class="row-2">
             <div class="field">
               <label for="default_in_last_6months">Defaults in Last 6 Months</label>
-              <input type="number" id="default_in_last_6months" name="default_in_last_6months" placeholder="e.g. 0" step="1" min="0" required/>
+              <input type="number" id="default_in_last_6months" name="default_in_last_6months" value="{{ form_data.get('default_in_last_6months', '') }}" placeholder="e.g. 0" step="1" min="0" required/>
               <span class="field-hint">Number of payment defaults in the past 6 months</span>
             </div>
           </div>

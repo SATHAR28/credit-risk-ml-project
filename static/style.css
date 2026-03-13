@@ -418,6 +418,25 @@ img{max-width:100%;display:block}
 .result-label{display:block;font-size:.71rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);font-weight:600}
 .result-value{font-family:var(--font-head);font-size:1.44rem}
 
+.result-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:-6px;margin-bottom:18px}
+.result-action-form{margin:0}
+.download-btn,.print-btn{
+   border:none;
+   border-radius:10px;
+   padding:11px 14px;
+   font-size:.84rem;
+   font-weight:600;
+   cursor:pointer;
+   display:inline-flex;
+   align-items:center;
+   gap:8px;
+   transition:transform .2s var(--ease), box-shadow .2s var(--ease), background .2s var(--ease);
+}
+.download-btn{background:#173867;color:#fff;box-shadow:0 10px 18px rgba(23,56,103,.24)}
+.download-btn:hover{transform:translateY(-1px);background:#1f4b88}
+.print-btn{background:#f3f6fc;color:#1d2f50;border:1px solid rgba(20,33,61,.15)}
+.print-btn:hover{transform:translateY(-1px);background:#eaf0fb}
+
 .prob-section{background:rgba(255,255,255,.75);border-radius:12px;padding:15px 16px}
 .prob-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
 .prob-title{font-size:.82rem;font-weight:600}
